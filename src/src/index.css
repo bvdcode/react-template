@@ -1,11 +1,6 @@
-@font-face {
-  font-family: "Roboto";
-  src: url("/assets/fonts/Roboto-Regular.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-}
-
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -19,18 +14,6 @@ html,
 body {
   margin: 0;
   padding: 0;
-  min-width: 320px;
-  font-family: "Roboto", system-ui, -apple-system, Segoe UI, Helvetica, Arial,
+  font-family: system-ui, -apple-system, Segoe UI, Helvetica, Arial,
     "Apple Color Emoji", "Segoe UI Emoji";
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-html {
-  overscroll-behavior: none;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
 }
