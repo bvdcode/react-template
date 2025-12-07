@@ -1,22 +1,9 @@
-import { ThemeProvider, CssBaseline } from "@mui/material";
-import { createContext, useContext, useMemo, ReactNode } from "react";
-import { darkTheme, lightTheme, type ThemeMode } from "../../shared/theme";
-import { createTheme, alpha, darken, lighten } from "@mui/material/styles";
-
-interface ThemeContextType {
-  mode: ThemeMode;
-  toggleTheme: () => void;
-}
-
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
-
-export const usePreferences = () => {
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error("useThemeMode must be used within ThemeContextProvider");
-  }
-  return context;
-};
+import { useMemo } from "react";
+import type { ReactNode } from "react";
+import { ThemeContext } from "./ThemeContext";
+import { darkTheme, lightTheme } from "../../shared/theme";
+import { usePreferencesStore } from "../../shared/store/preferencesStore";
+import { ThemeProvider as MuiThemeProvider, CssBaseline } from "@mui/material";
 
 interface ThemeContextProviderProps {
   children: ReactNode;
@@ -25,60 +12,29 @@ interface ThemeContextProviderProps {
 export const ThemeContextProvider = ({
   children,
 }: ThemeContextProviderProps) => {
-  const mode = useThemeStore((state) => state.mode);
-  const toggleTheme = useThemeStore((state) => state.toggleTheme);
+  const mode = usePreferencesStore((state) => state.theme);
+  const setTheme = usePreferencesStore((state) => state.setTheme);
+  const resolvedMode = useMemo(() => {
+    if (mode === "system") {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    }
+    return mode;
+  }, [mode]);
 
   const theme = useMemo(() => {
-    const base = mode === "light" ? lightTheme : darkTheme;
-    const overrides =
-      mode === "light" ? themeOverrides?.light : themeOverrides?.dark;
-    if (!overrides) return base;
+    return resolvedMode === "light" ? lightTheme : darkTheme;
+  }, [resolvedMode]);
 
-    const primaryMain = overrides.primary ?? base.palette.primary.main;
-    const secondaryMain = overrides.secondary ?? base.palette.secondary.main;
-    const backgroundDefault =
-      overrides.background ?? base.palette.background.default;
-    const textPrimary = overrides.text ?? base.palette.text.primary;
-
-    // derive paper, divider, text.secondary from provided colors
-    const paper =
-      mode === "light"
-        ? lighten(backgroundDefault, 0.98)
-        : darken(backgroundDefault, 0.1);
-    const divider = alpha(textPrimary, mode === "light" ? 0.08 : 0.06);
-    const textSecondary = alpha(textPrimary, mode === "light" ? 0.6 : 0.75);
-
-    return createTheme(base, {
-      palette: {
-        primary: { main: primaryMain },
-        secondary: { main: secondaryMain },
-        background: {
-          ...base.palette.background,
-          default: backgroundDefault,
-          paper,
-        },
-        text: {
-          ...base.palette.text,
-          primary: textPrimary,
-          secondary: textSecondary,
-        },
-        divider,
-      },
-    });
-  }, [mode, themeOverrides]);
-
-  const contextValue = useMemo(
-    () => ({ mode, toggleTheme }),
-    [mode, toggleTheme],
-  );
+  const contextValue = useMemo(() => ({ mode, setTheme }), [mode, setTheme]);
 
   return (
     <ThemeContext.Provider value={contextValue}>
-      <ToastContainer theme={mode} />
-      <ThemeProvider theme={theme}>
+      <MuiThemeProvider theme={theme}>
         <CssBaseline />
         {children}
-      </ThemeProvider>
+      </MuiThemeProvider>
     </ThemeContext.Provider>
   );
 };
