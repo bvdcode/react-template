@@ -1,9 +1,8 @@
-import { useThemeStore } from "../store/themeStore";
 import { ThemeMode } from "../types";
 import { ThemeProvider, CssBaseline } from "@mui/material";
+import { darkTheme, lightTheme } from "../../shared/theme";
 import { createContext, useContext, useMemo, ReactNode } from "react";
 import { createTheme, alpha, darken, lighten } from "@mui/material/styles";
-import { darkTheme, lightTheme } from "../../shared/theme";
 
 interface ThemeContextType {
   mode: ThemeMode;
@@ -12,7 +11,7 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export const useThemeMode = () => {
+export const usePreferences = () => {
   const context = useContext(ThemeContext);
   if (!context) {
     throw new Error("useThemeMode must be used within ThemeContextProvider");
@@ -22,12 +21,10 @@ export const useThemeMode = () => {
 
 interface ThemeContextProviderProps {
   children: ReactNode;
-  themeOverrides?: ThemeOverrides;
 }
 
 export const ThemeContextProvider = ({
   children,
-  themeOverrides,
 }: ThemeContextProviderProps) => {
   const mode = useThemeStore((state) => state.mode);
   const toggleTheme = useThemeStore((state) => state.toggleTheme);
