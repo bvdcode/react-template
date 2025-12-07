@@ -1,8 +1,7 @@
 import { create } from "zustand";
+import type { ThemeMode } from "../theme";
 import { persist } from "zustand/middleware";
 import { PREFERENCES_STORAGE_KEY } from "../config/storageKeys";
-
-type ThemeMode = "light" | "dark" | "system";
 
 interface PreferencesState {
   theme: ThemeMode;

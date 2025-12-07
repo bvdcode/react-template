@@ -1,7 +1,6 @@
-import { ThemeMode } from "../types";
 import { ThemeProvider, CssBaseline } from "@mui/material";
-import { darkTheme, lightTheme } from "../../shared/theme";
 import { createContext, useContext, useMemo, ReactNode } from "react";
+import { darkTheme, lightTheme, type ThemeMode } from "../../shared/theme";
 import { createTheme, alpha, darken, lighten } from "@mui/material/styles";
 
 interface ThemeContextType {
