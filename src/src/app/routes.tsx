@@ -15,7 +15,7 @@ const publicRoutes: RouteConfig[] = [
 ];
 
 const appRoutes: RouteConfig[] = [
-  { path: "/dashboard", element: <>Dashboard</>, protected: true },
+  { path: "/dashboard", element: <>Dashboard!!!</>, protected: true },
   // { path: "/something", element: <SomethingPage />, protected: false }
 ];
 
