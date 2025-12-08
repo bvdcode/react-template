@@ -8,7 +8,7 @@ export function useAuth() {
     setTimeout(() => {
       setIsInitializing(false);
       setIsAuthenticated(true);
-    }, 1450);
+    }, 100450);
   }, []);
 
   return { isAuthenticated, isInitializing };

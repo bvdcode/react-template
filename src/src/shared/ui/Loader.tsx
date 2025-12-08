@@ -19,9 +19,19 @@ const Loader: React.FC<LoaderProps> = ({ overlay, title, caption }) => {
         top: 0,
         left: 0,
         zIndex: 1300,
-        transition: "background-color 0.3s ease",
         backgroundColor: "background.default",
+        transition: "background-color 1s ease",
         position: overlay ? "fixed" : "static",
+        opacity: 0,
+        animation: "fadeIn 0.3s ease-in forwards",
+        "@keyframes fadeIn": {
+          from: {
+            opacity: 0,
+          },
+          to: {
+            opacity: 1,
+          },
+        },
       }}
     >
       <CircularProgress />
