@@ -1,7 +1,7 @@
-import { Navigate, useLocation } from "react-router-dom";
-import { type ReactNode } from "react";
 import { useAuth } from "./useAuth";
+import { type ReactNode } from "react";
 import Loader from "../../shared/ui/Loader";
+import { Navigate, useLocation } from "react-router-dom";
 
 type Props = {
   children: ReactNode;
