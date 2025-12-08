@@ -7,16 +7,6 @@ interface LoaderProps {
 }
 
 const Loader: React.FC<LoaderProps> = ({ overlay, title, caption }) => {
-  const styles = overlay
-    ? {
-        top: 0,
-        left: 0,
-        zIndex: 1300,
-        position: "fixed",
-        backgroundColor: "background.default",
-      }
-    : undefined;
-
   return (
     <Box
       display="flex"
@@ -25,7 +15,14 @@ const Loader: React.FC<LoaderProps> = ({ overlay, title, caption }) => {
       flexDirection="column"
       alignItems="center"
       justifyContent="center"
-      sx={styles}
+      sx={{
+        top: 0,
+        left: 0,
+        zIndex: 1300,
+        transition: "background-color 0.3s ease",
+        backgroundColor: "background.default",
+        position: overlay ? "fixed" : "static",
+      }}
     >
       <CircularProgress />
       {title && (

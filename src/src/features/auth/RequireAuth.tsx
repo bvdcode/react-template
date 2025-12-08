@@ -14,7 +14,7 @@ export function RequireAuth({ children }: Props) {
   if (isInitializing) {
     return (
       <Loader
-        overlay
+        overlay={true}
         title="Checking authorization..."
         caption="Please, wait"
       />
