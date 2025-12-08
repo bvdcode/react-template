@@ -37,6 +37,7 @@ export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isInitializing: boolean;
+  accessToken: string | null;
 }
 
 /**
@@ -45,4 +46,5 @@ export interface AuthState {
 export interface AuthContextValue extends AuthState {
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
+  setAccessToken: (token: string | null) => void;
 }

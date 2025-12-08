@@ -17,6 +17,7 @@ interface AuthProviderProps {
 export function AuthProvider({ children, methods }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
 
   useEffect(() => {
     const initAuth = async () => {
@@ -25,7 +26,6 @@ export function AuthProvider({ children, methods }: AuthProviderProps) {
         setUser(currentUser);
       } catch (error) {
         console.error("Failed to initialize auth:", error);
-        setUser(null);
       } finally {
         setIsInitializing(false);
       }
@@ -34,20 +34,34 @@ export function AuthProvider({ children, methods }: AuthProviderProps) {
     initAuth();
   }, [methods]);
 
+  useEffect(() => {
+    if (accessToken) {
+      (async () => {
+        try {
+          const u = await methods.getCurrentUser();
+          setUser(u);
+        } catch (error) {
+          console.error("Failed to fetch current user:", error);
+        }
+      })();
+    }
+  }, [accessToken, methods]);
+
   const logout = useCallback(async () => {
     try {
       await methods.logout();
     } finally {
+      setAccessToken(null);
       setUser(null);
     }
   }, [methods]);
 
   const refresh = useCallback(async () => {
     try {
-      await methods.refresh();
-      const user = await methods.getCurrentUser();
-      setUser(user);
+      const newToken = await methods.refresh();
+      setAccessToken(newToken);
     } catch (error) {
+      setAccessToken(null);
       setUser(null);
       throw error;
     }
@@ -57,8 +71,10 @@ export function AuthProvider({ children, methods }: AuthProviderProps) {
     user,
     isAuthenticated: user !== null,
     isInitializing,
+    accessToken,
     logout,
     refresh,
+    setAccessToken,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
