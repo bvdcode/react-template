@@ -8,16 +8,18 @@ import {
 } from "@mui/material";
 import { useAuth } from "../../features/auth";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useState, type FormEvent } from "react";
 import { authApi } from "../../shared/api/authApi";
 
 export const LoginPage = () => {
+  const navigate = useNavigate();
+  const { t } = useTranslation("login");
+  const [error, setError] = useState("");
+  const { setAuthenticated } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { setAuthenticated } = useAuth();
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -29,7 +31,7 @@ export const LoginPage = () => {
       setAuthenticated(true);
       navigate("/");
     } catch (err) {
-      setError("Login failed. Check your credentials.");
+      setError(t("errorMessage"));
       console.error("Login error:", err);
     } finally {
       setLoading(false);
@@ -47,7 +49,7 @@ export const LoginPage = () => {
         }}
       >
         <Typography variant="h4" component="h1" gutterBottom>
-          Login
+          {t("title")}
         </Typography>
         <Box
           component="form"
@@ -57,7 +59,7 @@ export const LoginPage = () => {
         >
           <TextField
             fullWidth
-            label="Username"
+            label={t("usernameLabel")}
             margin="normal"
             variant="outlined"
             value={username}
@@ -66,7 +68,7 @@ export const LoginPage = () => {
           />
           <TextField
             fullWidth
-            label="Password"
+            label={t("passwordLabel")}
             type="password"
             margin="normal"
             variant="outlined"
@@ -86,7 +88,7 @@ export const LoginPage = () => {
             disabled={loading}
             sx={{ mt: 2 }}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? t("loggingIn") : t("loginButton")}
           </Button>
         </Box>
       </Paper>
