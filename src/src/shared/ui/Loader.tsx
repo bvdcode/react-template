@@ -18,11 +18,11 @@ const Loader: React.FC<LoaderProps> = ({ overlay, title, caption }) => {
       sx={{
         top: 0,
         left: 0,
+        opacity: 0,
         zIndex: 1300,
         backgroundColor: "background.default",
         transition: "background-color 1s ease",
         position: overlay ? "fixed" : "static",
-        opacity: 0,
         animation: "fadeIn 0.3s ease-in forwards",
         "@keyframes fadeIn": {
           from: {
