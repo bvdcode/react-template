@@ -1,13 +1,13 @@
 import type { Resource, ResourceKey } from "i18next";
 
-const modules = import.meta.glob("./locales/**/*.json", {
+const modules = import.meta.glob("./**/*.json", {
   eager: true,
 }) as Record<string, { default: ResourceKey }>;
 
 const resources: Resource = {};
 
 for (const path in modules) {
-  const match = path.match(/\.\/locales\/([^/]+)\/([^/]+)\.json$/);
+  const match = path.match(/\.\/([^/]+)\/([^/]+)\.json$/);
   if (!match) {
     continue;
   }

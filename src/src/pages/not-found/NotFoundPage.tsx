@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Box, Button, Typography, Container } from "@mui/material";
 
 export const NotFoundPage = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("notFound");
 
   return (
     <Container maxWidth="sm">
@@ -15,13 +15,13 @@ export const NotFoundPage = () => {
         }}
       >
         <Typography variant="h4" component="h1" gutterBottom>
-          {t("notFound.title")}
+          {t("title")}
         </Typography>
         <Typography variant="body1" gutterBottom>
-          {t("notFound.message")}
+          {t("message")}
         </Typography>
         <Button href="/login" variant="contained" color="primary">
-          {t("notFound.backButton")}
+          {t("backButton")}
         </Button>
       </Box>
     </Container>

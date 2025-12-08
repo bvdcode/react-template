@@ -14,6 +14,7 @@ i18n
     resources: resources,
     supportedLngs: supportedLangs,
     nonExplicitSupportedLngs: true,
+    defaultNS: "common",
     detection: {
       order: ["localStorage", "navigator", "htmlTag"],
       caches: ["localStorage"],
