@@ -34,19 +34,6 @@ export function AuthProvider({ children, methods }: AuthProviderProps) {
     initAuth();
   }, [methods]);
 
-  const login = useCallback(
-    async (credentials: unknown) => {
-      try {
-        const user = await methods.login(credentials);
-        setUser(user);
-      } catch (error) {
-        setUser(null);
-        throw error;
-      }
-    },
-    [methods],
-  );
-
   const logout = useCallback(async () => {
     try {
       await methods.logout();
@@ -57,7 +44,8 @@ export function AuthProvider({ children, methods }: AuthProviderProps) {
 
   const refresh = useCallback(async () => {
     try {
-      const user = await methods.refresh();
+      await methods.refresh();
+      const user = await methods.getCurrentUser();
       setUser(user);
     } catch (error) {
       setUser(null);
@@ -69,7 +57,6 @@ export function AuthProvider({ children, methods }: AuthProviderProps) {
     user,
     isAuthenticated: user !== null,
     isInitializing,
-    login,
     logout,
     refresh,
   };

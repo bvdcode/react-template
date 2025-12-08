@@ -19,22 +19,15 @@ export interface AuthMethods {
   getCurrentUser: () => Promise<User | null>;
 
   /**
-   * Login user with credentials
-   * @param credentials - Login credentials (flexible object)
-   * @returns User object on success
-   */
-  login: (credentials: unknown) => Promise<User>;
-
-  /**
    * Logout current user
    */
   logout: () => Promise<void>;
 
   /**
    * Refresh authentication token/session
-   * @returns User object on success
+   * @returns New access token
    */
-  refresh: () => Promise<User>;
+  refresh: () => Promise<string>;
 }
 
 /**
@@ -50,7 +43,6 @@ export interface AuthState {
  * Auth context value with state and actions
  */
 export interface AuthContextValue extends AuthState {
-  login: (credentials: unknown) => Promise<void>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
 }

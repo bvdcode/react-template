@@ -24,32 +24,6 @@ export const authMethods: AuthMethods = {
     };
   },
 
-  login: async (credentials: unknown): Promise<User> => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Mock login logic
-    const { email, password } = credentials as {
-      email: string;
-      password: string;
-    };
-
-    if (!email || !password) {
-      throw new Error("Email and password are required");
-    }
-
-    // Simulate successful login
-    const token = "mock-jwt-token";
-    localStorage.setItem("auth-token", token);
-
-    return {
-      id: "1",
-      username: email,
-      displayName: "Demo User",
-      pictureUrl: "/icon.png",
-    };
-  },
-
   logout: async (): Promise<void> => {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 300));
@@ -58,21 +32,19 @@ export const authMethods: AuthMethods = {
     localStorage.removeItem("auth-token");
   },
 
-  refresh: async (): Promise<User> => {
+  refresh: async (): Promise<string> => {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 300));
 
-    const token = localStorage.getItem("auth-token");
-    if (!token) {
+    const oldToken = localStorage.getItem("auth-token");
+    if (!oldToken) {
       throw new Error("No token found");
     }
 
-    // Return refreshed user
-    return {
-      id: "1",
-      username: "demo_user",
-      displayName: "Demo User",
-      pictureUrl: "/icon.png",
-    };
+    // Return new access token
+    const newToken = "mock-jwt-access-token-" + Date.now();
+    localStorage.setItem("auth-token", newToken);
+
+    return newToken;
   },
 };
