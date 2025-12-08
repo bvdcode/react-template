@@ -21,7 +21,7 @@ export const NotFoundPage = () => {
           {t("notFound.message")}
         </Typography>
         <Button href="/login" variant="contained" color="primary">
-          {t("notFound.goToLogin")}
+          {t("notFound.backButton")}
         </Button>
       </Box>
     </Container>
