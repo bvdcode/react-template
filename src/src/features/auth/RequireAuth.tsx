@@ -1,25 +1,24 @@
 import { Navigate, useLocation } from "react-router-dom";
-import { useEffect, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
+import { useAuth } from "./useAuth";
+import Loader from "../../shared/ui/Loader";
 
 type Props = {
   children: ReactNode;
 };
 
 export function RequireAuth({ children }: Props) {
-  // const { isAuthenticated, isInitializing } = useAuth();
+  const { isAuthenticated, isInitializing } = useAuth();
   const location = useLocation();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isInitializing, setIsInitializing] = useState(true);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsInitializing(false);
-      setIsAuthenticated(true);
-    }, 450);
-  }, []);
 
   if (isInitializing) {
-    return <div>Loading...</div>;
+    return (
+      <Loader
+        overlay
+        title="Checking authorization..."
+        caption="Please, wait"
+      />
+    );
   }
 
   if (!isAuthenticated) {
