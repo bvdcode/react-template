@@ -21,7 +21,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     // Boot complete; API layer will adjust auth state later.
     const id = setTimeout(() => setIsInitializing(false), 0);
-    return () => clearTimeout(id);
+
+    // Listen for logout event from httpClient interceptor
+    const handleLogout = () => {
+      setIsAuthenticated(false);
+      setUser(null);
+    };
+    window.addEventListener("auth:logout", handleLogout);
+
+    return () => {
+      clearTimeout(id);
+      window.removeEventListener("auth:logout", handleLogout);
+    };
   }, []);
 
   const setAuthenticated = useCallback((value: boolean, u?: User | null) => {
