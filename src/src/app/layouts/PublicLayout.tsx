@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 
-export function PublicLayout() {
+export const PublicLayout = () => {
   return (
     <div
       style={{
@@ -14,4 +14,4 @@ export function PublicLayout() {
       <Outlet />
     </div>
   );
-}
+};

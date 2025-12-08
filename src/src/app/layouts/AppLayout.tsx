@@ -1,7 +1,11 @@
 import type { RouteConfig } from "../types";
 import { Outlet, Link } from "react-router-dom";
 
-export function AppLayout(routes: RouteConfig[]) {
+interface AppLayoutProps {
+  routes: RouteConfig[];
+}
+
+export const AppLayout = ({ routes }: AppLayoutProps) => {
   return (
     <div
       style={{
@@ -37,4 +41,4 @@ export function AppLayout(routes: RouteConfig[]) {
       </main>
     </div>
   );
-}
+};
