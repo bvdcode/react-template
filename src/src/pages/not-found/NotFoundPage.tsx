@@ -1,8 +1,6 @@
-import { useTheme } from "../../app/providers";
 import { Box, Button, Typography, Container } from "@mui/material";
 
 export const NotFoundPage = () => {
-  const { mode } = useTheme();
   return (
     <Container maxWidth="sm">
       <Box
@@ -11,7 +9,6 @@ export const NotFoundPage = () => {
           p: 4,
           boxShadow: 3,
           borderRadius: 2,
-          bgcolor: mode === "dark" ? "grey.900" : "grey.100",
         }}
       >
         <Typography variant="h4" component="h1" gutterBottom>

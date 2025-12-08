@@ -4,11 +4,11 @@ export const PublicLayout = () => {
   return (
     <div
       style={{
-        minHeight: "100vh",
+        width: "100%",
+        height: "100%",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "1rem",
       }}
     >
       <Outlet />
