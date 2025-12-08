@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import { useEffect, useState, type ReactNode } from "react";
 
 type Props = {
   children: ReactNode;
@@ -8,13 +8,15 @@ type Props = {
 export function RequireAuth({ children }: Props) {
   // const { isAuthenticated, isInitializing } = useAuth();
   const location = useLocation();
-  let isAuthenticated = false;
-  let isInitializing = true;
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(true);
 
-  setTimeout(() => {
-    isInitializing = false;
-    isAuthenticated = true;
-  }, 1250);
+  useEffect(() => {
+    setTimeout(() => {
+      setIsInitializing(false);
+      setIsAuthenticated(true);
+    }, 450);
+  }, []);
 
   if (isInitializing) {
     return <div>Loading...</div>;
