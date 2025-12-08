@@ -1,6 +1,9 @@
+import { useTranslation } from "react-i18next";
 import { Box, Button, Typography, Container } from "@mui/material";
 
 export const NotFoundPage = () => {
+  const { t } = useTranslation();
+
   return (
     <Container maxWidth="sm">
       <Box
@@ -12,13 +15,13 @@ export const NotFoundPage = () => {
         }}
       >
         <Typography variant="h4" component="h1" gutterBottom>
-          404 - Page Not Found
+          {t("notFound.title")}
         </Typography>
         <Typography variant="body1" gutterBottom>
-          The page you are looking for does not exist.
+          {t("notFound.message")}
         </Typography>
         <Button href="/login" variant="contained" color="primary">
-          Go to Login Page
+          {t("notFound.goToLogin")}
         </Button>
       </Box>
     </Container>
