@@ -3,20 +3,35 @@ import { RequireAuth } from "../features/auth";
 import { Routes, Route } from "react-router-dom";
 import { LoginPage, NotFoundPage } from "../pages";
 import { AppLayout, PublicLayout } from "./layouts";
+import { Dashboard, Home } from "@mui/icons-material";
 
 type RouteConfig = {
   path: string;
+  displayName: string;
   element: JSX.Element;
   protected?: boolean;
+  icon?: JSX.Element;
 };
 
 const publicRoutes: RouteConfig[] = [
-  { path: "/login", element: <LoginPage /> },
+  { path: "/login", displayName: "Login", element: <LoginPage /> },
 ];
 
 const appRoutes: RouteConfig[] = [
-  { path: "/", element: <>!!! HOME !!!</>, protected: false },
-  { path: "/dashboard", element: <>!!! Dashboard !!!</>, protected: true },
+  {
+    path: "/",
+    displayName: "Home",
+    element: <>!!! HOME !!!</>,
+    protected: false,
+    icon: <Home />,
+  },
+  {
+    path: "/dashboard",
+    displayName: "Dashboard",
+    element: <>!!! Dashboard !!!</>,
+    protected: true,
+    icon: <Dashboard />,
+  },
 ];
 
 export function AppRoutes() {
