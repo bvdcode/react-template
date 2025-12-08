@@ -1,6 +1,7 @@
+import type { RouteConfig } from "../types";
 import { Outlet, Link } from "react-router-dom";
 
-export function AppLayout() {
+export function AppLayout(routes: RouteConfig[]) {
   return (
     <div
       style={{
@@ -18,9 +19,17 @@ export function AppLayout() {
           justifyContent: "space-between",
         }}
       >
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <Link to="/dashboard">Dashboard</Link>
-        </div>
+        <nav>
+          {routes.map((route) => (
+            <Link
+              key={route.path}
+              to={route.path}
+              style={{ marginRight: "1rem" }}
+            >
+              {route.displayName}
+            </Link>
+          ))}
+        </nav>
       </header>
 
       <main style={{ flex: 1, padding: "1rem" }}>
