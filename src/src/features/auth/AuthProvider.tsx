@@ -5,6 +5,7 @@ import {
   createContext,
   type ReactNode,
 } from "react";
+import { authApi } from "../../shared/api/authApi";
 import type { AuthContextValue, User } from "./types";
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -19,8 +20,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
-    // Boot complete; API layer will adjust auth state later.
-    const id = setTimeout(() => setIsInitializing(false), 0);
+    let mounted = true;
+    (async () => {
+      // Attempt silent refresh before finishing initialization
+      await authApi.refresh();
+      if (!mounted) {
+        return;
+      }
+      setIsInitializing(false);
+    })();
 
     // Listen for logout event from httpClient interceptor
     const handleLogout = () => {
@@ -30,7 +38,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     window.addEventListener("auth:logout", handleLogout);
 
     return () => {
-      clearTimeout(id);
+      mounted = false;
       window.removeEventListener("auth:logout", handleLogout);
     };
   }, []);
