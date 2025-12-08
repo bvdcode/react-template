@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
+import { useContext } from "react";
+import { AuthContext } from "./AuthProvider";
 
+/**
+ * Hook to access auth context
+ * @throws Error if used outside AuthProvider
+ */
 export function useAuth() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isInitializing, setIsInitializing] = useState(true);
+  const context = useContext(AuthContext);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIsInitializing(false);
-      setIsAuthenticated(true);
-    }, 1000);
-  }, []);
+  if (!context) {
+    throw new Error("useAuth must be used within AuthProvider");
+  }
 
-  return { isAuthenticated, isInitializing };
+  return context;
 }

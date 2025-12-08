@@ -1,17 +1,21 @@
-import { useTheme } from "../../app/providers";
-import { Box, Button, TextField, Typography, Container } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Container,
+  Paper,
+} from "@mui/material";
 
 export const LoginPage = () => {
-  const { mode } = useTheme();
   return (
     <Container maxWidth="sm">
-      <Box
+      <Paper
         sx={{
           mt: 8,
           p: 4,
           boxShadow: 3,
           borderRadius: 2,
-          bgcolor: mode === "dark" ? "grey.900" : "grey.100",
         }}
       >
         <Typography variant="h4" component="h1" gutterBottom>
@@ -35,7 +39,7 @@ export const LoginPage = () => {
             Login
           </Button>
         </Box>
-      </Box>
+      </Paper>
     </Container>
   );
 };
