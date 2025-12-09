@@ -7,10 +7,10 @@ import {
   Typography,
 } from "@mui/material";
 import { useAuth } from "../../features/auth";
-import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useState, type FormEvent } from "react";
 import { authApi } from "../../shared/api/authApi";
+import { useNavigate, useLocation, Navigate } from "react-router-dom";
 
 export const LoginPage = () => {
   const location = useLocation();
