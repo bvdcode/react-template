@@ -1,4 +1,5 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
+import { authApi } from "./authApi";
 
 // Token management in memory
 let accessToken: string | null = null;
@@ -78,13 +79,7 @@ httpClient.interceptors.response.use(
 
       try {
         // Try refresh
-        const response = await axios.post<{ accessToken: string }>(
-          "/auth/refresh",
-        );
-        const newToken = response.data.accessToken;
-
-        setAccessToken(newToken);
-        processQueue(newToken);
+        await authApi.refresh();
 
         // Retry original request with new token
         if (originalRequest.headers) {
