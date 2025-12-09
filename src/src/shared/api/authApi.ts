@@ -1,5 +1,4 @@
-import axios from "axios";
-import { httpClient, setAccessToken, clearAccessToken } from "./httpClient";
+import { httpClient, setAccessToken, clearAccessToken, refreshAccessToken } from "./httpClient";
 
 interface LoginRequest {
   username: string;
@@ -37,14 +36,6 @@ export const authApi = {
    * Safe to call on app startup; errors are swallowed.
    */
   refresh: async (): Promise<void> => {
-    try {
-      const res = await axios.post("/auth/refresh", {});
-      const token = res.data?.accessToken;
-      if (token) {
-        setAccessToken(token);
-      }
-    } catch {
-      // no active refresh cookie or refresh failed; remain unauthenticated
-    }
+    await refreshAccessToken();
   },
 };

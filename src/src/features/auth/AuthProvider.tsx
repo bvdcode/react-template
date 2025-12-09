@@ -58,6 +58,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   const logout = useCallback(async () => {
+    try {
+      await authApi.logout();
+    } catch (error) {
+      // Ignore logout errors - still clear local state
+      console.error("Logout error:", error);
+    }
     setIsAuthenticated(false);
     setUser(null);
   }, []);

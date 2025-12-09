@@ -1,5 +1,4 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
-import { authApi } from "./authApi";
 
 // Token management in memory
 let accessToken: string | null = null;
@@ -12,10 +11,33 @@ export const clearAccessToken = () => {
   accessToken = null;
 };
 
+/**
+ * Refreshes access token using refresh cookie.
+ * Returns new token or null if refresh failed.
+ */
+export const refreshAccessToken = async (): Promise<string | null> => {
+  try {
+    const response = await axios.post(
+      "/api/v1/auth/refresh",
+      {},
+      { withCredentials: true }
+    );
+    const token = response.data?.accessToken;
+    if (token) {
+      setAccessToken(token);
+      return token;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+};
+
 // Create axios instance
 export const httpClient = axios.create({
   baseURL: "/api/v1",
   timeout: 10000,
+  withCredentials: true, // Important for refresh token cookies
   headers: {
     "Content-Type": "application/json",
   },
@@ -78,14 +100,19 @@ httpClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        // Try refresh
-        await authApi.refresh();
-
-        // Retry original request with new token
-        if (originalRequest.headers) {
-          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        const newToken = await refreshAccessToken();
+        
+        if (newToken) {
+          processQueue(newToken);
+          
+          // Retry original request with new token
+          if (originalRequest.headers) {
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          }
+          return httpClient(originalRequest);
+        } else {
+          throw new Error("Refresh token failed");
         }
-        return httpClient(originalRequest);
       } catch (refreshError) {
         // Refresh failed - clear token and queue
         clearAccessToken();
