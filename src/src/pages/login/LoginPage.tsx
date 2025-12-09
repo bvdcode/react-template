@@ -7,19 +7,26 @@ import {
   Typography,
 } from "@mui/material";
 import { useAuth } from "../../features/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useState, type FormEvent } from "react";
 import { authApi } from "../../shared/api/authApi";
 
 export const LoginPage = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation("login");
   const [error, setError] = useState("");
-  const { setAuthenticated } = useAuth();
+  const { isAuthenticated, isInitializing, setAuthenticated } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Redirect to home if already authenticated
+  if (!isInitializing && isAuthenticated) {
+    const from = (location.state as { from?: string })?.from || "/";
+    return <Navigate to={from} replace />;
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
