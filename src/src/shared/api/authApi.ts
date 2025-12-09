@@ -1,4 +1,9 @@
-import { httpClient, setAccessToken, clearAccessToken, refreshAccessToken } from "./httpClient";
+import {
+  httpClient,
+  setAccessToken,
+  clearAccessToken,
+  refreshAccessToken,
+} from "./httpClient";
 
 interface LoginRequest {
   username: string;

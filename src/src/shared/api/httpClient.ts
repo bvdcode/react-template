@@ -20,7 +20,7 @@ export const refreshAccessToken = async (): Promise<string | null> => {
     const response = await axios.post(
       "/api/v1/auth/refresh",
       {},
-      { withCredentials: true }
+      { withCredentials: true },
     );
     const token = response.data?.accessToken;
     if (token) {
@@ -101,10 +101,10 @@ httpClient.interceptors.response.use(
 
       try {
         const newToken = await refreshAccessToken();
-        
+
         if (newToken) {
           processQueue(newToken);
-          
+
           // Retry original request with new token
           if (originalRequest.headers) {
             originalRequest.headers.Authorization = `Bearer ${newToken}`;
