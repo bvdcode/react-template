@@ -50,6 +50,12 @@ httpClient.interceptors.response.use(
 
     // Check if 401 and not already retrying
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // Don't retry on auth endpoints themselves
+      const url = originalRequest.url || "";
+      if (url.includes("/auth/login") || url.includes("/auth/refresh")) {
+        return Promise.reject(error);
+      }
+
       originalRequest._retry = true;
 
       if (isRefreshing) {

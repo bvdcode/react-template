@@ -23,7 +23,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     let mounted = true;
     (async () => {
       // Attempt silent refresh before finishing initialization
-      await authApi.refresh();
+      try {
+        await authApi.refresh();
+        if (mounted) {
+          setIsAuthenticated(true);
+        }
+      } catch {
+        // No active refresh cookie
+      }
       if (!mounted) {
         return;
       }
