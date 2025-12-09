@@ -78,7 +78,7 @@ httpClient.interceptors.response.use(
 
       try {
         // Try refresh
-        const response = await httpClient.post<{ accessToken: string }>(
+        const response = await axios.post<{ accessToken: string }>(
           "/auth/refresh",
         );
         const newToken = response.data.accessToken;

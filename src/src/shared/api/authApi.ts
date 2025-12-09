@@ -1,3 +1,4 @@
+import axios from "axios";
 import { httpClient, setAccessToken, clearAccessToken } from "./httpClient";
 
 interface LoginRequest {
@@ -37,10 +38,7 @@ export const authApi = {
    */
   refresh: async (): Promise<void> => {
     try {
-      const res = await httpClient.post<{ accessToken: string }>(
-        "/auth/refresh",
-        {},
-      );
+      const res = await axios.post("/auth/refresh", {});
       const token = res.data?.accessToken;
       if (token) {
         setAccessToken(token);
