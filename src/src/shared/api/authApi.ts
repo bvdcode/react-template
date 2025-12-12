@@ -39,8 +39,9 @@ export const authApi = {
   /**
    * Tries to refresh access token using backend refresh cookie.
    * Safe to call on app startup; errors are swallowed.
+   * Returns token if successful, null otherwise.
    */
-  refresh: async (): Promise<void> => {
-    await refreshAccessToken();
+  refresh: async (): Promise<string | null> => {
+    return await refreshAccessToken();
   },
 };

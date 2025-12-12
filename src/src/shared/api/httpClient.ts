@@ -1,8 +1,6 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
 
-// Token management in memory
 let accessToken: string | null = null;
-
 export const getAccessToken = () => accessToken;
 export const setAccessToken = (token: string | null) => {
   accessToken = token;
@@ -23,12 +21,14 @@ export const refreshAccessToken = async (): Promise<string | null> => {
       { withCredentials: true },
     );
     const token = response.data?.accessToken;
-    if (token) {
+    if (token && typeof token === "string" && token.length > 0) {
       setAccessToken(token);
       return token;
     }
+    clearAccessToken();
     return null;
   } catch {
+    clearAccessToken();
     return null;
   }
 };
@@ -36,8 +36,8 @@ export const refreshAccessToken = async (): Promise<string | null> => {
 // Create axios instance
 export const httpClient = axios.create({
   baseURL: "/api/v1",
-  timeout: 10000,
-  withCredentials: true, // Important for refresh token cookies
+  timeout: 60000,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },

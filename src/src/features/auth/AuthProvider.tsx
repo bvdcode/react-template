@@ -23,18 +23,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     let mounted = true;
     (async () => {
       // Attempt silent refresh before finishing initialization
-      try {
-        await authApi.refresh();
-        if (mounted) {
-          setIsAuthenticated(true);
-        }
-      } catch {
-        // No active refresh cookie
+      const token = await authApi.refresh();
+      if (mounted) {
+        // Установить isAuthenticated только если токен получен
+        setIsAuthenticated(!!token);
+        setIsInitializing(false);
       }
-      if (!mounted) {
-        return;
-      }
-      setIsInitializing(false);
     })();
 
     // Listen for logout event from httpClient interceptor
