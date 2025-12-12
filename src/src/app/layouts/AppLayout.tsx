@@ -1,44 +1,59 @@
 import type { RouteConfig } from "../types";
-import { Outlet, Link } from "react-router-dom";
+import { UserMenu } from "./components/UserMenu";
+import { Outlet, Link, useLocation } from "react-router-dom";
+import { AppBar, Toolbar, Box, Button, Container } from "@mui/material";
 
 interface AppLayoutProps {
   routes: RouteConfig[];
 }
 
 export const AppLayout = ({ routes }: AppLayoutProps) => {
+  const location = useLocation();
+
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <header
-        style={{
-          padding: "0.5rem 1rem",
-          borderBottom: "1px solid #ddd",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <AppBar position="static" elevation={1}>
+        <Toolbar>
+          <Box sx={{ display: "flex", gap: 1, flexGrow: 1 }}>
+            {routes.map((route) => {
+              const isActive = location.pathname === route.path;
+              return (
+                <Button
+                  key={route.path}
+                  component={Link}
+                  to={route.path}
+                  startIcon={route.icon}
+                  sx={{
+                    color: "inherit",
+                    bgcolor: isActive
+                      ? "rgba(255, 255, 255, 0.1)"
+                      : "transparent",
+                    "&:hover": {
+                      bgcolor: "rgba(255, 255, 255, 0.15)",
+                    },
+                  }}
+                >
+                  {route.displayName}
+                </Button>
+              );
+            })}
+          </Box>
+
+          <UserMenu />
+        </Toolbar>
+      </AppBar>
+
+      <Container
+        component="main"
+        maxWidth={false}
+        sx={{
+          flexGrow: 1,
+          py: 3,
+          px: { xs: 2, sm: 3 },
         }}
       >
-        <nav>
-          {routes.map((route) => (
-            <Link
-              key={route.path}
-              to={route.path}
-              style={{ marginRight: "1rem" }}
-            >
-              {route.displayName}
-            </Link>
-          ))}
-        </nav>
-      </header>
-
-      <main style={{ flex: 1, padding: "1rem" }}>
         <Outlet />
-      </main>
-    </div>
+      </Container>
+    </Box>
   );
 };
