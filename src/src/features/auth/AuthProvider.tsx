@@ -24,9 +24,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
     (async () => {
       // Attempt silent refresh before finishing initialization
       const token = await authApi.refresh();
+      if (!mounted) return;
+
+      // If token received, validate it by fetching user data
+      if (token) {
+        try {
+          const userData = await authApi.me();
+          if (mounted) {
+            setUser(userData);
+            setIsAuthenticated(true);
+          }
+        } catch (error) {
+          // Token invalid or /me failed
+          console.error("Failed to fetch user data:", error);
+          if (mounted) {
+            setIsAuthenticated(false);
+            setUser(null);
+          }
+        }
+      }
+
       if (mounted) {
-        // Установить isAuthenticated только если токен получен
-        setIsAuthenticated(!!token);
         setIsInitializing(false);
       }
     })();

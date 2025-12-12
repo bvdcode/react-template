@@ -35,7 +35,8 @@ export const LoginPage = () => {
 
     try {
       await authApi.login({ username, password });
-      setAuthenticated(true);
+      const user = await authApi.me();
+      setAuthenticated(true, user);
       navigate("/");
     } catch (err) {
       setError(t("errorMessage"));

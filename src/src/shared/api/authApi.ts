@@ -4,6 +4,7 @@ import {
   clearAccessToken,
   refreshAccessToken,
 } from "./httpClient";
+import type { User } from "../../features/auth/types";
 
 interface LoginRequest {
   username: string;
@@ -12,6 +13,13 @@ interface LoginRequest {
 
 interface LoginResponse {
   accessToken: string;
+}
+
+interface MeResponse {
+  id: string;
+  username: string;
+  displayName?: string;
+  pictureUrl?: string;
 }
 
 export const authApi = {
@@ -26,6 +34,19 @@ export const authApi = {
     const token = response.data.accessToken;
     setAccessToken(token);
     return token;
+  },
+
+  /**
+   * Get current user info - validates token
+   */
+  me: async (): Promise<User> => {
+    const response = await httpClient.get<MeResponse>("/auth/me");
+    return {
+      id: response.data.id,
+      username: response.data.username,
+      displayName: response.data.displayName,
+      pictureUrl: response.data.pictureUrl,
+    };
   },
 
   /**
