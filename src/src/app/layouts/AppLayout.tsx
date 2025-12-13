@@ -11,7 +11,14 @@ export const AppLayout = ({ routes }: AppLayoutProps) => {
   const location = useLocation();
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+    <Box
+      sx={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <AppBar position="static" elevation={1}>
         <Toolbar>
           <Box sx={{ display: "flex", gap: 1, flexGrow: 1 }}>
