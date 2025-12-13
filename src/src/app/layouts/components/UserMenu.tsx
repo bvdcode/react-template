@@ -23,7 +23,7 @@ import { useTranslation } from "react-i18next";
 export const UserMenu = () => {
   const { user, logout } = useAuth();
   const { resolvedMode, setTheme } = useTheme();
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation("common");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isOpen = Boolean(anchorEl);
 
@@ -44,20 +44,18 @@ export const UserMenu = () => {
     // Toggle based on effective theme, not raw mode, so system works intuitively
     const next = resolvedMode === "dark" ? "light" : "dark";
     setTheme(next);
-    handleClose();
   };
 
   const handleToggleLanguage = () => {
     const next = i18n.language === "ru" ? "en" : "ru";
     i18n.changeLanguage(next);
-    handleClose();
   };
 
   const displayName = user?.displayName || user?.username || "User";
   const avatarLetter = displayName.charAt(0).toUpperCase();
   const themeLabel = useMemo(
-    () => (resolvedMode === "dark" ? "Light Mode" : "Dark Mode"),
-    [resolvedMode],
+    () => (resolvedMode === "dark" ? t("userMenu.darkMode") : t("userMenu.lightMode")),
+    [resolvedMode, t],
   );
   const ThemeIcon = resolvedMode === "dark" ? Brightness7 : Brightness4;
 
@@ -124,14 +122,14 @@ export const UserMenu = () => {
           <ListItemIcon>
             <Language fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Change language</ListItemText>
+          <ListItemText>{t("userMenu.changeLanguage")}</ListItemText>
         </MenuItem>
 
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Logout</ListItemText>
+          <ListItemText>{t("userMenu.logout")}</ListItemText>
         </MenuItem>
       </Menu>
     </>
