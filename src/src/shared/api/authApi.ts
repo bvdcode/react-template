@@ -15,7 +15,7 @@ interface LoginResponse {
   accessToken: string;
 }
 
-interface MeResponse {
+interface UserInfoResponse {
   id: string;
   username: string;
   displayName?: string;
@@ -40,7 +40,7 @@ export const authApi = {
    * Get current user info - validates token
    */
   me: async (): Promise<User> => {
-    const response = await httpClient.get<MeResponse>("/auth/me");
+    const response = await httpClient.get<UserInfoResponse>("auth/me");
     return {
       id: response.data.id,
       username: response.data.username,
@@ -54,7 +54,7 @@ export const authApi = {
    */
   logout: async (): Promise<void> => {
     clearAccessToken();
-    await httpClient.post("/auth/logout");
+    await httpClient.post("auth/logout");
   },
 
   /**

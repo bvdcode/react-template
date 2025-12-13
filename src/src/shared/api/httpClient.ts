@@ -15,8 +15,8 @@ export const clearAccessToken = () => {
  */
 export const refreshAccessToken = async (): Promise<string | null> => {
   try {
-    const response = await axios.post(
-      "/api/v1/auth/refresh",
+    const response = await httpClient.post(
+      "auth/refresh",
       {},
       { withCredentials: true },
     );
@@ -75,7 +75,7 @@ httpClient.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       // Don't retry on auth endpoints themselves
       const url = originalRequest.url || "";
-      if (url.includes("/auth/login") || url.includes("/auth/refresh")) {
+      if (url.includes("auth/login") || url.includes("auth/refresh")) {
         return Promise.reject(error);
       }
 
