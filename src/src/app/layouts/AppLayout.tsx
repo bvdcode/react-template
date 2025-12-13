@@ -56,9 +56,10 @@ export const AppLayout = ({ routes }: AppLayoutProps) => {
         maxWidth={false}
         sx={{
           py: 2,
-          px: { xs: 2, sm: 2 },
+          px: { xs: 2, sm: 0 },
           flexGrow: 1,
           minHeight: 0,
+          scrollbarGutter: "stable both-edges",
           overflow: "auto",
           display: "flex",
           flexDirection: "column",
