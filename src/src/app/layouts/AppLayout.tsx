@@ -17,6 +17,7 @@ export const AppLayout = ({ routes }: AppLayoutProps) => {
         height: "100%",
         display: "flex",
         flexDirection: "column",
+        overflow: "hidden",
       }}
     >
       <AppBar position="static" elevation={1}>
@@ -54,9 +55,13 @@ export const AppLayout = ({ routes }: AppLayoutProps) => {
         component="main"
         maxWidth={false}
         sx={{
+          py: 2,
+          px: { xs: 2, sm: 2 },
           flexGrow: 1,
-          py: 3,
-          px: { xs: 2, sm: 3 },
+          minHeight: 0,
+          overflow: "auto",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
         <Outlet />
