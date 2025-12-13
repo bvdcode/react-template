@@ -3,6 +3,7 @@ import type { ThemeMode } from "../../shared/theme";
 
 export interface ThemeContextType {
   mode: ThemeMode;
+  resolvedMode: ThemeMode;
   setTheme: (theme: ThemeMode) => void;
 }
 

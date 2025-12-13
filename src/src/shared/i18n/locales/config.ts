@@ -18,7 +18,7 @@ i18n
     detection: {
       order: ["localStorage", "navigator", "htmlTag"],
       caches: ["localStorage"],
-      lookupLocalStorage: STORAGE_KEY_PREFIX + "-i18next-lang",
+      lookupLocalStorage: STORAGE_KEY_PREFIX + "i18next-lang",
     },
     interpolation: {
       escapeValue: false,

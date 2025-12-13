@@ -1,4 +1,4 @@
-import { useState, type MouseEvent } from "react";
+import { useState, type MouseEvent, useMemo } from "react";
 import {
   Avatar,
   IconButton,
@@ -10,11 +10,20 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import { Logout } from "@mui/icons-material";
+import {
+  Logout,
+  Language,
+  Brightness4,
+  Brightness7,
+} from "@mui/icons-material";
 import { useAuth } from "../../../features/auth";
+import { useTheme } from "../../providers";
+import { useTranslation } from "react-i18next";
 
 export const UserMenu = () => {
   const { user, logout } = useAuth();
+  const { resolvedMode, setTheme } = useTheme();
+  const { i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isOpen = Boolean(anchorEl);
 
@@ -31,8 +40,26 @@ export const UserMenu = () => {
     await logout();
   };
 
+  const handleToggleTheme = () => {
+    // Toggle based on effective theme, not raw mode, so system works intuitively
+    const next = resolvedMode === "dark" ? "light" : "dark";
+    setTheme(next);
+    handleClose();
+  };
+
+  const handleToggleLanguage = () => {
+    const next = i18n.language === "ru" ? "en" : "ru";
+    i18n.changeLanguage(next);
+    handleClose();
+  };
+
   const displayName = user?.displayName || user?.username || "User";
   const avatarLetter = displayName.charAt(0).toUpperCase();
+  const themeLabel = useMemo(
+    () => (resolvedMode === "dark" ? "Light Mode" : "Dark Mode"),
+    [resolvedMode],
+  );
+  const ThemeIcon = resolvedMode === "dark" ? Brightness7 : Brightness4;
 
   return (
     <>
@@ -85,6 +112,20 @@ export const UserMenu = () => {
         </Box>
 
         <Divider />
+
+        <MenuItem onClick={handleToggleTheme}>
+          <ListItemIcon>
+            <ThemeIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{themeLabel}</ListItemText>
+        </MenuItem>
+
+        <MenuItem onClick={handleToggleLanguage}>
+          <ListItemIcon>
+            <Language fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Change language</ListItemText>
+        </MenuItem>
 
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>

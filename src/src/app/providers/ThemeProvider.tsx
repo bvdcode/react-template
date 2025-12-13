@@ -27,7 +27,10 @@ export const ThemeContextProvider = ({
     return resolvedMode === "light" ? lightTheme : darkTheme;
   }, [resolvedMode]);
 
-  const contextValue = useMemo(() => ({ mode, setTheme }), [mode, setTheme]);
+  const contextValue = useMemo(
+    () => ({ mode, resolvedMode, setTheme }),
+    [mode, resolvedMode, setTheme],
+  );
 
   return (
     <ThemeContext.Provider value={contextValue}>
