@@ -1,5 +1,5 @@
 import { useAuth } from "./useAuth";
-import { type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import Loader from "../../shared/ui/Loader";
 import { Navigate, useLocation } from "react-router-dom";
 
@@ -8,13 +8,43 @@ type Props = {
 };
 
 export function RequireAuth({ children }: Props) {
-  const { isAuthenticated, isInitializing } = useAuth();
+  const {
+    isAuthenticated,
+    isInitializing,
+    hydrated,
+    hasChecked,
+    refreshEnabled,
+    ensureAuth,
+  } = useAuth();
   const location = useLocation();
 
-  console.log("[RequireAuth] Checking auth:", { isInitializing, isAuthenticated, path: location.pathname });
+  useEffect(() => {
+    ensureAuth();
+  }, [ensureAuth]);
+
+  // Wait for store rehydration before deciding to redirect.
+  if (!hydrated) {
+    return (
+      <Loader
+        overlay={true}
+        title="Loading..."
+        caption="Please, wait"
+      />
+    );
+  }
 
   if (isInitializing) {
-    console.log("[RequireAuth] Still initializing, showing loader");
+    return (
+      <Loader
+        overlay={true}
+        title="Checking authorization..."
+        caption="Please, wait"
+      />
+    );
+  }
+
+  // If refresh is allowed and we haven't checked yet, show loader instead of flashing login.
+  if (!isAuthenticated && refreshEnabled && !hasChecked) {
     return (
       <Loader
         overlay={true}
@@ -25,10 +55,8 @@ export function RequireAuth({ children }: Props) {
   }
 
   if (!isAuthenticated) {
-    console.log("[RequireAuth] Not authenticated, redirecting to /login");
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
 
-  console.log("[RequireAuth] Authenticated, rendering children");
   return <>{children}</>;
 }

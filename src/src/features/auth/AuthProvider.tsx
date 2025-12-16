@@ -1,5 +1,4 @@
 import {
-  useState,
   useEffect,
   useCallback,
   createContext,
@@ -7,6 +6,7 @@ import {
 } from "react";
 import { authApi } from "../../shared/api/authApi";
 import type { AuthContextValue, User } from "./types";
+import { useAuthStore } from "../../shared/store";
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
@@ -15,63 +15,62 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isInitializing, setIsInitializing] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const user = useAuthStore((s) => s.user);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isInitializing = useAuthStore((s) => s.isInitializing);
+  const refreshEnabled = useAuthStore((s) => s.refreshEnabled);
+  const hydrated = useAuthStore((s) => s.hydrated);
+  const hasChecked = useAuthStore((s) => s.hasChecked);
+  const setInitializing = useAuthStore((s) => s.setInitializing);
+  const setAuthenticatedInStore = useAuthStore((s) => s.setAuthenticated);
+  const setUnauthenticated = useAuthStore((s) => s.setUnauthenticated);
+  const logoutLocal = useAuthStore((s) => s.logoutLocal);
+  const setHasChecked = useAuthStore((s) => s.setHasChecked);
 
   useEffect(() => {
-    let mounted = true;
-    (async () => {
-      console.log("[AuthProvider] Starting initialization...");
-      // Attempt silent refresh before finishing initialization
-      const token = await authApi.refresh();
-      console.log("[AuthProvider] Refresh result:", token ? "token received" : "no token");
-      if (!mounted) return;
-
-      // If token received, validate it by fetching user data
-      if (token) {
-        try {
-          const userData = await authApi.me();
-          console.log("[AuthProvider] User data fetched:", userData);
-          if (mounted) {
-            setUser(userData);
-            setIsAuthenticated(true);
-          }
-        } catch (error) {
-          // Token invalid or /me failed
-          console.error("[AuthProvider] Failed to fetch user data:", error);
-          if (mounted) {
-            setIsAuthenticated(false);
-            setUser(null);
-          }
-        }
-      }
-
-      if (mounted) {
-        console.log("[AuthProvider] Initialization complete. isAuthenticated:", !!token);
-        setIsInitializing(false);
-      }
-    })();
-
     // Listen for logout event from httpClient interceptor
     const handleLogout = () => {
-      setIsAuthenticated(false);
-      setUser(null);
+      setUnauthenticated();
     };
     window.addEventListener("auth:logout", handleLogout);
 
     return () => {
-      mounted = false;
       window.removeEventListener("auth:logout", handleLogout);
     };
   }, []);
 
-  const setAuthenticated = useCallback((value: boolean, u?: User | null) => {
-    setIsAuthenticated(value);
-    if (typeof u !== "undefined") {
-      setUser(u ?? null);
+  const ensureAuth = useCallback(async () => {
+    if (isAuthenticated || isInitializing) return;
+    if (!hydrated) return;
+    if (!refreshEnabled) return;
+
+    setInitializing(true);
+    try {
+      const token = await authApi.refresh();
+      if (token) {
+        const userData = await authApi.me();
+        setAuthenticatedInStore(userData);
+      } else {
+        setUnauthenticated();
+      }
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+      setUnauthenticated();
+    } finally {
+      setHasChecked(true);
+      setInitializing(false);
     }
-  }, []);
+  }, [isAuthenticated, isInitializing, hydrated, refreshEnabled, setInitializing, setAuthenticatedInStore, setUnauthenticated, setHasChecked]);
+
+  const setAuthenticated = useCallback((value: boolean, u?: User | null) => {
+    if (value && u) {
+      setAuthenticatedInStore(u);
+      return;
+    }
+    if (!value) {
+      setUnauthenticated();
+    }
+  }, [setAuthenticatedInStore, setUnauthenticated]);
 
   const logout = useCallback(async () => {
     try {
@@ -80,14 +79,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Ignore logout errors - still clear local state
       console.error("Logout error:", error);
     }
-    setIsAuthenticated(false);
-    setUser(null);
-  }, []);
+    logoutLocal();
+  }, [logoutLocal]);
 
   const value: AuthContextValue = {
     user,
     isAuthenticated,
     isInitializing,
+    refreshEnabled,
+    hydrated,
+    hasChecked,
+    ensureAuth,
     setAuthenticated,
     logout,
   };
