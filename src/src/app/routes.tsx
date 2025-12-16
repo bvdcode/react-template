@@ -13,17 +13,19 @@ const publicRoutes: RouteConfig[] = [
 const appRoutes: RouteConfig[] = [
   {
     path: "/",
+    icon: <Home />,
+    protected: true,
     displayName: "Home",
     element: (
       <Box bgcolor="green" width="100%" height="100%">
         Home
       </Box>
     ),
-    protected: false,
-    icon: <Home />,
   },
   {
+    protected: true,
     path: "/dashboard",
+    icon: <Dashboard />,
     displayName: "Dashboard",
     element: (
       <Box width="100%" bgcolor="red" display="flex" flexDirection="column">
@@ -38,8 +40,6 @@ const appRoutes: RouteConfig[] = [
         </Box>
       </Box>
     ),
-    protected: true,
-    icon: <Dashboard />,
   },
 ];
 
@@ -52,19 +52,15 @@ export function AppRoutes() {
         ))}
       </Route>
 
-      <Route element={<AppLayout routes={appRoutes} />}>
+      <Route
+        element={
+          <RequireAuth>
+            <AppLayout routes={appRoutes} />
+          </RequireAuth>
+        }
+      >
         {appRoutes.map((route) => (
-          <Route
-            key={route.path}
-            path={route.path}
-            element={
-              route.protected ? (
-                <RequireAuth>{route.element}</RequireAuth>
-              ) : (
-                route.element
-              )
-            }
-          />
+          <Route key={route.path} path={route.path} element={route.element} />
         ))}
       </Route>
 
